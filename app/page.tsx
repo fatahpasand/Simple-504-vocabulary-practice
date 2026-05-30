@@ -8,6 +8,7 @@ import PracticeCard from '@/components/PracticeCard'
 import ResultsCard from '@/components/ResultsCard'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 interface Word {
   word: string
@@ -113,9 +114,12 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background p-4">
       <div className="max-w-2xl mx-auto py-8">
-        <h1 className="text-4xl font-bold text-center mb-8 text-foreground">
-          Vocabulary Practice
-        </h1>
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-4xl font-bold text-foreground">
+            Vocabulary Practice
+          </h1>
+          <ThemeToggle />
+        </div>
 
         {mode === 'config' && (
           <Card className="p-8 space-y-6">
