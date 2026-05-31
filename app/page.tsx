@@ -44,6 +44,16 @@ export default function Home() {
     return flattened
   }, [])
 
+  // Fisher-Yates shuffle algorithm - unbiased and reliable
+  const shuffleArray = <T,>(array: T[]): T[] => {
+    const arr = [...array]
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]]
+    }
+    return arr
+  }
+
   const getAvailableWords = (): Word[] => {
     if (!startLesson || !endLesson) return []
     const start = parseInt(startLesson)
@@ -83,16 +93,25 @@ export default function Home() {
 
     setValidationError('')
 
-    // Filter and select words
-    let selectedWords = [...available]
+    // Track word frequency in localStorage to deprioritize recently seen words
+    const storedFreq = localStorage.getItem('wordFrequency')
+    const wordFreq: Record<string, number> = storedFreq ? JSON.parse(storedFreq) : {}
+
+    // Sort available words by frequency (ascending), so less-used words come first
+    const sortedByFrequency = [...available].sort((a, b) => {
+      const freqA = wordFreq[a.word] || 0
+      const freqB = wordFreq[b.word] || 0
+      return freqA - freqB
+    })
+
+    // Select words from the frequency-sorted list
+    let selectedWords = sortedByFrequency
     if (wordCount !== 'All') {
-      selectedWords = selectedWords
-        .sort(() => Math.random() - 0.5)
-        .slice(0, parseInt(wordCount))
+      selectedWords = selectedWords.slice(0, parseInt(wordCount))
     }
 
-    // Shuffle
-    selectedWords = selectedWords.sort(() => Math.random() - 0.5)
+    // Shuffle using Fisher-Yates for unbiased randomization
+    selectedWords = shuffleArray(selectedWords)
 
     setFilteredWords(selectedWords)
     setCurrentIndex(0)
@@ -167,6 +186,13 @@ export default function Home() {
                 { correct, word: userInput }
               ]
               setUserAnswers(newAnswers)
+
+              // Track word usage
+              const storedFreq = localStorage.getItem('wordFrequency')
+              const wordFreq: Record<string, number> = storedFreq ? JSON.parse(storedFreq) : {}
+              const currentWord = filteredWords[currentIndex]
+              wordFreq[currentWord.word] = (wordFreq[currentWord.word] || 0) + 1
+              localStorage.setItem('wordFrequency', JSON.stringify(wordFreq))
 
               if (!correct) {
                 setWrongAnswers([
