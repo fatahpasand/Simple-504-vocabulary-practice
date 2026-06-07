@@ -84,7 +84,7 @@ export default function PracticeCard({
       <Button
         onClick={handleButtonClick}
         disabled={answerState === 'pending' && !userInput.trim()}
-        className="w-full"
+        className="w-full bg-[var(--accent-strong)] text-[var(--accent-strong-foreground)] hover:opacity-90"
         size="lg"
       >
         {answerState === 'pending'

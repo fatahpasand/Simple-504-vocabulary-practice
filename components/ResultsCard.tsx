@@ -1,12 +1,11 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-
-interface Word {
-  word: string
-  definition: string
-  lesson: number
-}
+import StarButton from '@/components/StarButton'
+import { getHardWords, toggleHardWord, type Word } from '@/lib/vocab'
 
 interface ResultsCardProps {
   correct: number
@@ -23,7 +22,16 @@ export default function ResultsCard({
   onRestart,
   onReturnToSettings,
 }: ResultsCardProps) {
-  const percentage = Math.round((correct / total) * 100)
+  const percentage = total > 0 ? Math.round((correct / total) * 100) : 0
+  const [hardWords, setHardWordsState] = useState<string[]>([])
+
+  useEffect(() => {
+    setHardWordsState(getHardWords())
+  }, [])
+
+  const handleToggleHard = (word: string) => {
+    setHardWordsState(toggleHardWord(word))
+  }
 
   return (
     <Card className="space-y-6">
@@ -34,7 +42,9 @@ export default function ResultsCard({
       <CardContent className="space-y-6">
         {/* Score */}
         <div className="text-center space-y-2">
-          <div className="text-6xl font-bold text-primary">{percentage}%</div>
+          <div className="text-6xl font-bold text-[var(--accent-strong)]">
+            {percentage}%
+          </div>
           <div className="text-lg text-muted-foreground">Correct</div>
         </div>
 
@@ -63,13 +73,22 @@ export default function ResultsCard({
             {/* Wrong Answers */}
             <div className="space-y-3">
               <h3 className="font-semibold text-foreground">Words to Review</h3>
-              <div className="space-y-3 max-h-64 overflow-y-auto">
+              <div className="flex flex-col gap-3 max-h-64 overflow-y-auto">
                 {wrongAnswers.map((word, index) => (
-                  <div key={index} className="bg-muted p-3 rounded-lg space-y-1">
-                    <div className="font-medium text-foreground">{word.word}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {word.definition}
+                  <div
+                    key={index}
+                    className="flex items-start justify-between gap-3 bg-muted p-3 rounded-lg"
+                  >
+                    <div className="space-y-1">
+                      <div className="font-medium text-foreground">{word.word}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {word.definition}
+                      </div>
                     </div>
+                    <StarButton
+                      active={hardWords.includes(word.word)}
+                      onToggle={() => handleToggleHard(word.word)}
+                    />
                   </div>
                 ))}
               </div>
