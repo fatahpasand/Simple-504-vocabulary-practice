@@ -109,7 +109,7 @@ export default function ResultsCard({
             className="w-full"
             size="lg"
           >
-            Return to Settings
+            Return to Homepage
           </Button>
         </div>
       </CardContent>

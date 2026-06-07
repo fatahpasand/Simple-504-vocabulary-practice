@@ -9,7 +9,7 @@ const ACCENT_KEY = 'accentTheme'
 const LESSON_RANGE_KEY = 'lastLessonRange'
 const WORD_COUNT_KEY = 'lastWordCount'
 
-export type AccentTheme = 'bw' | 'blue' | 'purple' | 'teal' | 'amber'
+export type AccentTheme = 'bw' | 'blue' | 'purple' | 'teal' | 'amber' | 'rose'
 
 export const ACCENT_THEMES: { value: AccentTheme; label: string; swatch: string }[] = [
   { value: 'bw', label: 'Black & White', swatch: 'oklch(0.205 0 0)' },
@@ -17,6 +17,7 @@ export const ACCENT_THEMES: { value: AccentTheme; label: string; swatch: string 
   { value: 'purple', label: 'Purple', swatch: 'oklch(0.56 0.2 295)' },
   { value: 'teal', label: 'Teal', swatch: 'oklch(0.6 0.12 195)' },
   { value: 'amber', label: 'Amber', swatch: 'oklch(0.72 0.16 70)' },
+  { value: 'rose', label: 'Rose', swatch: 'oklch(0.58 0.18 350)' },
 ]
 
 function isBrowser() {

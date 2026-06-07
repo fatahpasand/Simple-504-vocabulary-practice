@@ -39,25 +39,18 @@ export default function WordListItem({
       <button
         type="button"
         onClick={onToggleReveal}
-        className="block w-full text-left"
+        className="block w-full text-left mt-2"
         aria-hidden={!revealed}
       >
-        <div
-          className={cn(
-            'grid transition-all duration-300 ease-in-out',
-            revealed ? 'grid-rows-[1fr] opacity-100 mt-2' : 'grid-rows-[0fr] opacity-0',
-          )}
-        >
-          <div className="overflow-hidden">
-            <p
-              className={cn(
-                'text-sm leading-relaxed text-muted-foreground transition-[filter] duration-300',
-                revealed ? 'blur-0' : 'blur-sm',
-              )}
-            >
-              {word.definition}
-            </p>
-          </div>
+        <div className="relative">
+          <p
+            className={cn(
+              'text-sm leading-relaxed text-muted-foreground transition-all duration-300',
+              revealed ? 'blur-0 opacity-100' : 'blur-[6px] opacity-40 select-none',
+            )}
+          >
+            {word.definition}
+          </p>
         </div>
       </button>
     </div>

@@ -13,10 +13,9 @@ import AccentSelector from '@/components/AccentSelector'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { ThemeToggle } from '@/components/ThemeToggle'
-import { BookOpen, PenLine, ListChecks, Star } from 'lucide-react'
+import { BookOpen, PenLine, ListChecks } from 'lucide-react'
 import {
   shuffleArray,
-  getHardWords,
   getLastLessonRange,
   setLastLessonRange,
   getLastWordCount,
@@ -24,7 +23,7 @@ import {
   type Word,
 } from '@/lib/vocab'
 
-type AppMode = 'home' | 'learn' | 'hard' | 'practice-words' | 'practice-mc' | 'results'
+type AppMode = 'home' | 'wordlist' | 'practice-words' | 'practice-mc' | 'results'
 
 export default function Home() {
   const [mode, setMode] = useState<AppMode>('home')
@@ -36,7 +35,6 @@ export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [correctCount, setCorrectCount] = useState(0)
   const [wrongAnswers, setWrongAnswers] = useState<Word[]>([])
-  const [hardWordList, setHardWordList] = useState<string[]>([])
   const [activePracticeMode, setActivePracticeMode] = useState<
     'practice-words' | 'practice-mc'
   >('practice-words')
@@ -62,7 +60,6 @@ export default function Home() {
     setStartLesson(range.start)
     setEndLesson(range.end)
     setWordCount(getLastWordCount())
-    setHardWordList(getHardWords())
   }, [])
 
   const getAvailableWords = (): Word[] => {
@@ -114,7 +111,7 @@ export default function Home() {
     setLastWordCount(wordCount)
   }
 
-  const startSession = (target: 'learn' | 'practice-words' | 'practice-mc') => {
+  const startSession = (target: 'practice-words' | 'practice-mc') => {
     const selected = validateAndSelect()
     if (!selected) return
     persistSettings()
@@ -122,9 +119,7 @@ export default function Home() {
     setCurrentIndex(0)
     setCorrectCount(0)
     setWrongAnswers([])
-    if (target === 'practice-words' || target === 'practice-mc') {
-      setActivePracticeMode(target)
-    }
+    setActivePracticeMode(target)
     setMode(target)
   }
 
@@ -152,22 +147,16 @@ export default function Home() {
 
   const goHome = () => {
     setMode('home')
-    setHardWordList(getHardWords())
   }
-
-  const hardWords = useMemo(
-    () => words.filter((w) => hardWordList.includes(w.word)),
-    [words, hardWordList],
-  )
 
   return (
     <div className="min-h-screen bg-background p-4">
       <div className="max-w-2xl mx-auto py-8">
-        <div className="flex items-center justify-between gap-3 mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <h1 className="text-3xl font-bold text-foreground text-balance">
             Vocabulary Practice
           </h1>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 self-end sm:self-auto">
             <AccentSelector />
             <ThemeToggle />
           </div>
@@ -201,65 +190,42 @@ export default function Home() {
 
               <div className="flex flex-col gap-3">
                 <Button
-                  onClick={() => startSession('learn')}
-                  size="lg"
-                  variant="outline"
-                  className="w-full justify-start"
-                >
-                  <BookOpen data-icon="inline-start" />
-                  Learn Mode
-                </Button>
-                <Button
                   onClick={() => startSession('practice-words')}
                   size="lg"
-                  className="w-full justify-start bg-[var(--accent-strong)] text-[var(--accent-strong-foreground)] hover:opacity-90"
+                  className="w-full justify-start h-auto py-3 text-left bg-[var(--accent-strong)] text-[var(--accent-strong-foreground)] hover:opacity-90 whitespace-normal"
                 >
-                  <PenLine data-icon="inline-start" />
-                  Practice: Definitions → Words
+                  <PenLine className="shrink-0 mr-2" />
+                  <span>Practice: Definitions → Words</span>
                 </Button>
                 <Button
                   onClick={() => startSession('practice-mc')}
                   size="lg"
-                  className="w-full justify-start bg-[var(--accent-strong)] text-[var(--accent-strong-foreground)] hover:opacity-90"
+                  className="w-full justify-start h-auto py-3 text-left bg-[var(--accent-strong)] text-[var(--accent-strong-foreground)] hover:opacity-90 whitespace-normal"
                 >
-                  <ListChecks data-icon="inline-start" />
-                  Practice: Words → Definitions
+                  <ListChecks className="shrink-0 mr-2" />
+                  <span>Practice: Words → Definitions</span>
                 </Button>
               </div>
             </Card>
 
             <Button
-              onClick={() => {
-                setHardWordList(getHardWords())
-                setMode('hard')
-              }}
+              onClick={() => setMode('wordlist')}
               variant="outline"
               size="lg"
               className="w-full justify-start"
             >
-              <Star data-icon="inline-start" />
-              Hard Words ({hardWordList.length})
+              <BookOpen data-icon="inline-start" />
+              Word List
             </Button>
 
             <CasualGuide />
           </div>
         )}
 
-        {mode === 'learn' && (
+        {mode === 'wordlist' && (
           <WordList
-            title="Learn Mode"
-            words={sessionWords}
+            words={words}
             onBack={goHome}
-            emptyMessage="No words selected."
-          />
-        )}
-
-        {mode === 'hard' && (
-          <WordList
-            title="Hard Words"
-            words={hardWords}
-            onBack={goHome}
-            emptyMessage="No hard words yet. Star words in Learn Mode or after a practice round."
           />
         )}
 
@@ -269,6 +235,7 @@ export default function Home() {
             totalWords={sessionWords.length}
             currentIndex={currentIndex}
             onNext={(correct) => handleAnswer(correct)}
+            onQuit={goHome}
           />
         )}
 
@@ -279,6 +246,7 @@ export default function Home() {
             currentIndex={currentIndex}
             distractorPool={words}
             onNext={(correct) => handleAnswer(correct)}
+            onQuit={goHome}
           />
         )}
 

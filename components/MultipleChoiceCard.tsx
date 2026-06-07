@@ -13,6 +13,7 @@ interface MultipleChoiceCardProps {
   currentIndex: number
   distractorPool: Word[]
   onNext: (correct: boolean) => void
+  onQuit: () => void
 }
 
 export default function MultipleChoiceCard({
@@ -21,6 +22,7 @@ export default function MultipleChoiceCard({
   currentIndex,
   distractorPool,
   onNext,
+  onQuit,
 }: MultipleChoiceCardProps) {
   const [selected, setSelected] = useState<string | null>(null)
 
@@ -51,7 +53,18 @@ export default function MultipleChoiceCard({
   }
 
   return (
-    <Card className="p-8 space-y-6">
+    <Card className="p-8 space-y-6 relative">
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={onQuit}
+        className="absolute right-2 top-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+        title="Quit Practice"
+      >
+        <span className="sr-only">Quit</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </Button>
+
       <div className="text-sm text-muted-foreground text-center">
         Word {currentIndex + 1} of {totalWords}
       </div>
