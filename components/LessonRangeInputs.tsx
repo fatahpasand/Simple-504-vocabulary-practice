@@ -33,7 +33,7 @@ export default function LessonRangeInputs({
           <Input
             id="end"
             type="number"
-            placeholder="10"
+            placeholder="42"
             value={endLesson}
             onChange={(e) => onEndChange(e.target.value)}
             min="1"

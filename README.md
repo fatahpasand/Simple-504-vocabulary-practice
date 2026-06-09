@@ -1,33 +1,65 @@
-# Simple-504-vocabulary-practice
+# Simple 504 Vocabulary Practice
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+Lightweight Next.js app to practice the 504 essential vocabulary words. It provides selectable lesson ranges, multiple-choice and practice cards, and summary results to help track progress.
 
-## Built with v0
+## Features
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+- Select lesson range and word count
+- Single-word practice cards for definition to word and multiple-choice practice for word to definition
+- Simple, data-driven word list (JSON)
+- Starring words for a personalized list
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_4yNHM0V0MhU8oq6YKgEzRIQRDbUv)
+## Quick Start
 
-## Getting Started
+Requirements: Node.js (LTS) and a package manager (`pnpm`, `npm`, or `yarn`).
 
-First, run the development server:
+Install dependencies:
 
 ```bash
+pnpm install
+# or
+npm install
+# or
+yarn
+```
+
+Run development server:
+
+```bash
+pnpm dev
+# or
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Build for production:
 
-## Learn More
+```bash
+pnpm build
+pnpm start
+```
 
-To learn more, take a look at the following resources:
+Lint the project:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
+```bash
+pnpm lint
+```
+
+## Project structure (high level)
+
+- `app/` — Next.js app routes and global styles. Entry page: `app/page.tsx`.
+- `components/` — UI components used across the app (e.g. `PracticeCard`, `ResultsCard`).
+- `data/words.json` — word list source used by the app.
+- `lib/` — utilities (e.g. `lib/vocab.ts`).
+
+## Data
+
+The vocabulary comes from `data/words.json`. Update or replace that file to change the available words.
+
+## Development notes
+
+- Edit UI components in `components/` to change behavior or visuals.
+- The app uses Tailwind CSS and Radix UI primitives (see `package.json` dependencies).
